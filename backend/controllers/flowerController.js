@@ -1,4 +1,5 @@
-const Flower = require('../models/flowerModels');
+const Flower = require('../models/flowerModel');
+
 
 // Get all flowers
 const getAllFlowers = async (req, res) => {
@@ -13,11 +14,11 @@ const getAllFlowers = async (req, res) => {
 // Add a new flower
 const addFlower = async (req, res) => {
   try {
-    const { name, category, price } = req.body;
+    const { name, category, price, description } = req.body;
     const image = req.file ? req.file.filename : null; // Get image filename from Multer
 
     // Basic validation
-    if (!name || !category || !price || !image) {
+    if (!name || !category || !price || !image || ! description) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -25,7 +26,8 @@ const addFlower = async (req, res) => {
       name,
       category,
       price,
-      image // store only filename, not full path
+      image,
+      description // store only filename, not full path
     });
 
     const savedFlower = await newFlower.save();
@@ -64,7 +66,7 @@ const getFlower = async (req, res) => {
 // Update a flower by ID
 const updateFlower = async (req, res) => {
   try {
-    const { name, category, price } = req.body;
+    const { name, category, price,  description } = req.body;
     const image = req.file ? req.file.filename : undefined; // optional update
 
     // Build update object
@@ -73,6 +75,7 @@ const updateFlower = async (req, res) => {
     if (category) updateData.category = category;
     if (price) updateData.price = price;
     if (image) updateData.image = image;
+    if (description) updateData.description = description;
 
     const updatedFlower = await Flower.findByIdAndUpdate(
       req.params.id,

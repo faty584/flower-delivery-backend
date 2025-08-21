@@ -2,13 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const  path = require('path');
 
 dotenv.config();
+//starting express app
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB connection
 mongoose
@@ -17,11 +20,16 @@ mongoose
   .catch((error) => console.error('Error connecting to MongoDB:', error));
 
 // Routes
-app.use('/api/flowers', require('./routes/flowerRoutes'));
-
 app.get('/', (req, res) => {
   res.send('Welcome to the Flower Delivery API 🌸. Try visiting /api/flower to see all flowers.');
 });
+
+app.use('/api/flowers', require('./routes/flowerRoutes'));
+
+app.use('/api/users', require('./routes/userRoutes'));
+
+
+
 
 app.use('/uploads', express.static('uploads'));
 
