@@ -1,38 +1,29 @@
-# flower-delivery-backend
-Table of Contents
-Overview
-Features
-Presentation Link
-Live Demo
-Technologies Used
-API Endpoints
-Installation and Setup
-Environment Variables
-Author
-License
-Overview
-The Flower Website Backend is a Node.js and Express.js-powered RESTful API designed to manage flowers in an online flower shop. This backend provides functionalities to create, read, update, and delete flower entries along with image uploads and category management.
 
-Features
-RESTful API for managing flowers
-Image upload support using multer
-MongoDB database integration with Mongoose
-CRUD operations for flowers (Create, Read, Update, Delete)
-Category support for flower classification
-Middleware for request logging and error handling
-Presentation Link
-screenshop 
-Presentation Link
+# 🌸 Flower Delivery Backend
 
- [Live Demo:](https://flower-delivery-backend1.onrender.com)
-Live Demo
+This is the backend API for the **Flower Delivery** application.  
+It is built using **Node.js**, **Express.js**, and **MongoDB (Mongoose)**.  
+The backend provides authentication, flower management, and order management endpoints.
 
-Technologies Used
-Node.js
-Express.js
-MongoDB & Mongoose
-Multer (for image uploads)
-dotenv (for environment configuration)
+
+## 🚀 Features
+- User authentication (signup, login, JWT-based)
+- Flower management (CRUD operations)
+- Image upload support (Multer)
+- Order management (create, view, delete orders)
+- Secure password storage (bcrypt)
+- MongoDB database connection with Mongoose
+
+
+## 🛠️ Tech Stack
+
+- **Node.js**
+- **Express.js**
+- **MongoDB + Mongoose**
+- **JWT** for authentication
+- **Multer** for image uploads
+- **dotenv** for environment variables
+
 API Endpoints
 The API will be running on http://localhost:4000
 
@@ -46,17 +37,31 @@ Clone the repository:
 
 Install dependencies:
 
-Set up the environment variables: PORT=4000 MONGO_URI=  mongodb+srv://mammannurain:Mammanurain1@module4.u9yia0t.mongodb.net/?retryWrites=true&w=majority&appName=module4
+Set up the environment variables: PORT=4000 MONGO_URI = mongodb+srv://mammannurain:Mammanurain1@module4.u9yia0t.mongodb.net/?retryWrites=true&w=majority&appName=module4
 
 Start the server:
-node server.js
 
 Environment Variables
 Ensure you configure the .env file with the correct MongoDB connection string and port.
 
-Author
-Name:Fatima Alhassan SalisuContact: [mamannurain20@gmail.com] GitHub: faty584
 
-License
-This project is licensed under the MIT License.
+
+How to Run
+
+Clone the repository:
+   ```bash
+LIVEDEMO :  https://flower-delivery-backend1.onrender.com
+
+   cd flower-delivery-backend/backend
+
+npm install
+npm start
+node server.js
+
+
+SCREEN SHOT OF LOOP
+
+Author
+
+Name: fatima alhassan salisu Email: mamannurai20@gmail.com GitHub: faty584
 
