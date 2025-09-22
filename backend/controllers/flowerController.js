@@ -1,12 +1,12 @@
 const Flower = require('../models/flowerModel');
 
-
 // Get all flowers
 const getAllFlowers = async (req, res) => {
   try {
     const flowers = await Flower.find();
     res.status(200).json(flowers);
   } catch (error) {
+    console.error("❌ Error in getAllFlowers:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -15,10 +15,10 @@ const getAllFlowers = async (req, res) => {
 const addFlower = async (req, res) => {
   try {
     const { name, category, price, description } = req.body;
-    const image = req.file ? req.file.filename : null; // Get image filename from Multer
+    const image = req.file ? req.file.filename : null;
 
-    // Basic validation
-    if (!name || !category || !price || !image || ! description) {
+    // Validation
+    if (!name || !category || !price || !description || !image) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
@@ -26,14 +26,15 @@ const addFlower = async (req, res) => {
       name,
       category,
       price,
-      image,
-      description // store only filename, not full path
+      description,
+      image, // only filename, not full path
     });
 
     const savedFlower = await newFlower.save();
     res.status(201).json(savedFlower);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("❌ Error in addFlower:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -46,41 +47,42 @@ const deleteFlower = async (req, res) => {
     }
     res.status(200).json({ message: 'Flower deleted successfully', deletedFlower });
   } catch (error) {
+    console.error("❌ Error in deleteFlower:", error);
     res.status(500).json({ error: error.message });
   }
 };
-//Get flower
+
+// Get flower by ID
 const getFlower = async (req, res) => {
   try {
-    const flower = await Flower.findById(req.params.id); // pass the ID
+    const flower = await Flower.findById(req.params.id);
     if (!flower) {
       return res.status(404).json({ error: 'Flower not found' });
     }
     res.status(200).json(flower);
   } catch (error) {
+    console.error("❌ Error in getFlower:", error);
     res.status(500).json({ error: error.message });
   }
 };
 
-
-// Update a flower by ID
+// Update flower
 const updateFlower = async (req, res) => {
   try {
-    const { name, category, price,  description } = req.body;
-    const image = req.file ? req.file.filename : undefined; // optional update
+    const { name, category, price, description } = req.body;
+    const image = req.file ? req.file.filename : undefined;
 
-    // Build update object
     const updateData = {};
     if (name) updateData.name = name;
     if (category) updateData.category = category;
     if (price) updateData.price = price;
-    if (image) updateData.image = image;
     if (description) updateData.description = description;
+    if (image) updateData.image = image;
 
     const updatedFlower = await Flower.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true } // return updated document
+      { new: true }
     );
 
     if (!updatedFlower) {
@@ -89,9 +91,9 @@ const updateFlower = async (req, res) => {
 
     res.status(200).json(updatedFlower);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("❌ Error in updateFlower:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-
-module.exports = { getAllFlowers, addFlower, deleteFlower, getFlower, updateFlower  };
+module.exports = { getAllFlowers, addFlower, deleteFlower, getFlower, updateFlower };

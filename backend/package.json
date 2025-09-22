@@ -66,7 +66,6 @@
     "node": "^20.19.4",
     "node-bin-setup": "^1.1.4",
     "node-status-codes": "^1.0.0",
-    "nodemon": "^3.1.10",
     "noop6": "^1.0.10",
     "normalize-package-data": "^2.5.0",
     "normalize-path": "^3.0.0",
@@ -137,5 +136,8 @@
   "bugs": {
     "url": "https://github.com/faty584/flower-delivery-backend/issues"
   },
-  "homepage": "https://github.com/faty584/flower-delivery-backend#readme"
+  "homepage": "https://github.com/faty584/flower-delivery-backend#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }
