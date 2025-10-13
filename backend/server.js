@@ -11,10 +11,12 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors("http://localhost:3000"));
 
 // Static folder for uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Serve uploaded images
+app.use('/uploads', express.static('uploads'));
+
 
 // MongoDB connection
 mongoose
