@@ -1,14 +1,20 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { upload } = require('../cloudinary');  // ✅ keep this only
+const { upload } = require("../cloudinary");
+const {
+  getAllFlowers,
+  getFlower,
+  addFlower,
+  updateFlower,
+  deleteFlower,
+  getRandomFlowers,
+} = require("../controllers/flowerController");
 
-const { getAllFlowers, addFlower, deleteFlower, getFlower, updateFlower } = require('../controllers/flowerController');
-
-// Routes
-router.get('/', getAllFlowers);
-router.post('/', upload.single('Image'), addFlower);
-router.get('/:id', getFlower);
-router.delete('/:id', deleteFlower);
-router.put('/:id', upload.single('Image'), updateFlower);
+router.get("/", getAllFlowers);
+router.get("/random", getRandomFlowers);
+router.get("/:id", getFlower);
+router.post("/", upload.single("image"), addFlower);
+router.patch("/:id", upload.single("image"), updateFlower);
+router.delete("/:id", deleteFlower);
 
 module.exports = router;
