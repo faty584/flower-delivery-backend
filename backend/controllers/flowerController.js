@@ -1,31 +1,44 @@
-const Flower = require('../models/flowerModel');
+const Flower = require("../models/flowerModel");
 
-// ✅ Add new flower
+// ✅ Add new flower (Cloudinary version)
 const addFlower = async (req, res) => {
   try {
-    console.log('Uploaded file:', req.file);
-
-    // Multer + Cloudinary automatically uploads and returns the file path
-    const imageUrl = req.file?.path;
-
-    if (!imageUrl) {
-      return res.status(400).json({ error: 'Image upload failed' });
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({
+        success: false,
+        error: "Please upload an image",
+      });
     }
 
     const { name, category, description, price } = req.body;
 
+    if (!name || !category || !price) {
+      return res.status(400).json({
+        success: false,
+        error: "Please provide name, category and price",
+      });
+    }
+
+    // ✅ req.file.path is the Cloudinary URL
     const flower = await Flower.create({
       name,
       category,
       description,
-      price,
-      image: imageUrl, // ✅ Save the Cloudinary URL
+      price: parseFloat(price),
+      image: req.file.path,
     });
 
-    res.status(201).json({ message: 'Flower added successfully', flower });
+    res.status(201).json({
+      success: true,
+      message: "Flower added successfully",
+      data: flower,
+    });
   } catch (error) {
-    console.error('Create flower error:', error);
-    res.status(500).json({ error: error.message });
+    console.error("❌ Error creating flower:", error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to create flower",
+    });
   }
 };
 

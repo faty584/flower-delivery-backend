@@ -11,16 +11,22 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors("http://localhost:3000"));
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://your-production-domain.com'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Static folder for uploads
-// Serve uploaded images
 app.use('/uploads', express.static('uploads'));
-
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+  })
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch((error) => console.error('❌ Error connecting to MongoDB:', error));
 
@@ -36,6 +42,16 @@ app.use('/api/users', require('./routes/userRoutes'));
 // Handle unknown routes
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found 🚫" });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : {}
+  });
 });
 
 // Start server
