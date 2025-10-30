@@ -1,59 +1,61 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const path = require('path');
-
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
 dotenv.config();
 
-// Start express app
 const app = express();
 
-// Middleware
 app.use(express.json());
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-production-domain.com'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());  // Allows all origins by default
 
-// Static folder for uploads
-app.use('/uploads', express.static('uploads'));
+// ✅ Import routes
+const flowerRoutes = require("./routes/flowerRoutes");
+const userRoutes = require("./routes/userRoutes");
 
-// MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-  })
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch((error) => console.error('❌ Error connecting to MongoDB:', error));
+// ✅ MongoDB Connection Function
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+    console.log("✅ MongoDB connected successfully");
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error.message);
+    setTimeout(connectDB, 5000); // Retry after 5 seconds
+  }
+};
 
-// Base route
-app.get('/', (req, res) => {
-  res.send('🌸 Welcome to the Flower Delivery API! Use /api/flowers to manage flowers.');
+// ✅ Events for better debugging
+mongoose.connection.on("disconnected", () => {
+  console.warn("⚠️ MongoDB disconnected! Trying to reconnect...");
+  connectDB();
+});
+mongoose.connection.on("connected", () => {
+  console.log("✅ MongoDB connected again!");
+});
+mongoose.connection.on("error", (err) => {
+  console.error("❌ MongoDB error:", err.message);
 });
 
-// Routes
-app.use('/api/flowers', require('./routes/flowerRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
+// ✅ Connect to MongoDB first
+connectDB();
 
-// Handle unknown routes
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found 🚫" });
+// ✅ Base route
+app.get("/", (req, res) => {
+  res.send("🌸 Welcome to the Flower Delivery API!");
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
-  });
-});
+// ✅ Use routes
+app.use("/api/flowers", flowerRoutes);
+app.use("/api/users", userRoutes);
 
-// Start server
+// ✅ Unknown routes
+app.use((req, res) => res.status(404).json({ message: "Route not found 🚫" }));
+
+// ✅ Start server after DB connects
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
